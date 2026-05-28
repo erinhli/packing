@@ -168,15 +168,47 @@
   button:disabled { opacity: 0.5; cursor: not-allowed; }
   .weather-box {
     margin-top: 12px;
-    padding: 12px;
     background: var(--surface-2);
     border-radius: var(--radius);
     font-size: 13px;
     color: var(--text-muted);
     display: none;
+    overflow: hidden;
   }
   .weather-box.on { display: block; }
   .weather-box b { color: var(--text); font-weight: 500; }
+  .weather-summary { padding: 10px 12px 4px; font-size: 12px; }
+  .weather-days {
+    display: flex;
+    overflow-x: auto;
+    padding: 6px 10px 10px;
+    gap: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .weather-days::-webkit-scrollbar { display: none; }
+  .weather-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 8px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    min-width: 50px;
+    flex-shrink: 0;
+  }
+  .weather-day.rainy { border-color: #7baed6; background: #edf4fb; }
+  @media (prefers-color-scheme: dark) {
+    .weather-day.rainy { border-color: #3a6080; background: #1a2d3d; }
+  }
+  .wd-dow { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .wd-date { font-size: 10px; color: var(--text-tertiary); }
+  .wd-icon { font-size: 18px; line-height: 1; margin: 3px 0 1px; }
+  .wd-high { font-size: 13px; font-weight: 600; color: var(--text); }
+  .wd-low { font-size: 11px; color: var(--text-muted); }
+  .wd-rain { font-size: 10px; color: #4a90c4; font-weight: 500; }
   .summary {
     display: flex;
     gap: 16px;
@@ -788,12 +820,21 @@
       const precip = w.daily.precipitation_sum || [];
       const precipProb = w.daily.precipitation_probability_max || [];
       if (!highs.length || !lows.length) return null;
+      const dates = w.daily.time || [];
+      const days_data = dates.map((date, i) => ({
+        date,
+        high: w.daily.temperature_2m_max[i] != null ? Math.round(w.daily.temperature_2m_max[i]) : null,
+        low: w.daily.temperature_2m_min[i] != null ? Math.round(w.daily.temperature_2m_min[i]) : null,
+        rain: precipProb[i] != null ? precipProb[i] : (precip[i] != null && precip[i] > 1 ? 80 : 0),
+        precipMm: precip[i] || 0,
+      }));
       return {
         location: name + (country ? ', ' + country : ''),
         tempHigh: Math.round(Math.max(...highs)),
         tempLow: Math.round(Math.min(...lows)),
         willRain: precip.some(p => p > 1) || precipProb.some(p => p > 50),
         isClimate: daysUntil > 14 || daysUntil < -1,
+        days: days_data,
       };
     } catch (e) {
       
@@ -999,10 +1040,34 @@
     const el = document.getElementById('pk-weather');
     if (!state.weather) { el.classList.remove('on'); return; }
     const w = state.weather;
-    const label = w.isClimate ? 'Seasonal estimate' : 'Forecast';
-    let txt = `<b>${label} for ${w.location}:</b> highs around <b>${w.tempHigh}°F</b>, lows around <b>${w.tempLow}°F</b>`;
-    if (w.willRain) txt += `, <b>rain likely</b>`;
-    el.innerHTML = txt;
+    const label = w.isClimate ? 'Seasonal avg' : 'Forecast';
+    const rainNote = w.willRain ? ' &middot; rain expected' : '';
+    let html = `<div class="weather-summary"><b>${label}: ${w.location}</b> &middot; ${w.tempLow}&ndash;${w.tempHigh}&deg;F${rainNote}</div>`;
+
+    if (w.days && w.days.length) {
+      const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      html += '<div class="weather-days">';
+      w.days.forEach(d => {
+        const dt = new Date(d.date + 'T12:00:00');
+        const dow = DOW[dt.getDay()];
+        const mo = dt.getMonth() + 1;
+        const day = dt.getDate();
+        const isRainy = d.rain > 40 || d.precipMm > 1;
+        const icon = isRainy ? '🌧' : d.high != null && d.high > 80 ? '☀️' : d.high != null && d.high < 45 ? '🥶' : '⛅';
+        const rainPct = d.rain > 0 ? `${Math.round(d.rain)}%` : '';
+        html += `<div class="weather-day${isRainy ? ' rainy' : ''}">
+          <span class="wd-dow">${dow}</span>
+          <span class="wd-date">${mo}/${day}</span>
+          <span class="wd-icon">${icon}</span>
+          <span class="wd-high">${d.high != null ? d.high + '°' : '--'}</span>
+          <span class="wd-low">${d.low != null ? d.low + '°' : '--'}</span>
+          ${rainPct ? `<span class="wd-rain">${rainPct}</span>` : '<span class="wd-rain">&nbsp;</span>'}
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    el.innerHTML = html;
     el.classList.add('on');
   }
 
