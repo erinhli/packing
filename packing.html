@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Packing">
+<title>Family Packing</title>
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --surface-2: #f1efe8;
+    --text: #1f1f1d;
+    --text-muted: #6b6a64;
+    --text-tertiary: #9a988f;
+    --border: rgba(0,0,0,0.1);
+    --border-strong: rgba(0,0,0,0.2);
+    --accent: #c96442;
+    --accent-bg: #faece7;
+    --accent-text: #712b13;
+    --success: #0f6e56;
+    --success-bg: #e1f5ee;
+    --warning: #854f0b;
+    --warning-text: #ba7517;
+    --danger: #a32d2d;
+    --danger-bg: #fcebeb;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1916;
+      --surface: #262521;
+      --surface-2: #2c2b27;
+      --text: #f5f4ef;
+      --text-muted: #b4b2a9;
+      --text-tertiary: #888780;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.24);
+      --accent: #d85a30;
+      --accent-bg: #4a1b0c;
+      --accent-text: #f5c4b3;
+      --success: #5dcaa5;
+      --success-bg: #04342c;
+      --warning: #efb35e;
+      --warning-text: #efb35e;
+      --danger: #f09595;
+      --danger-bg: #501313;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px;
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .icon-luggage::before {
+    content: "🧳";
+    font-size: 20px;
+  }
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  label {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  input[type=text], input[type=date], input[type=number], select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type=number] { padding-right: 8px; }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-bg);
+  }
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .chip {
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 0.5px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+    font-family: inherit;
+    transition: all 0.1s;
+  }
+  .chip:active { transform: scale(0.97); }
+  .chip.on {
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    border-color: var(--accent);
+  }
+  button {
+    padding: 10px 16px;
+    font-size: 14px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all 0.1s;
+  }
+  button:active { transform: scale(0.97); }
+  button.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .weather-box {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--text-muted);
+    display: none;
+  }
+  .weather-box.on { display: block; }
+  .weather-box b { color: var(--text); font-weight: 500; }
+  .summary {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+  .summary b { color: var(--text); font-weight: 500; }
+  .traveler-section { margin-bottom: 20px; }
+  .traveler-h {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 0.5px solid var(--border-strong);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .traveler-h .count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .cat {
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .cat-h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    cursor: pointer;
+    user-select: none;
+  }
+  .cat-h-title {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cat-h .count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .chevron {
+    transition: transform 0.15s;
+    color: var(--text-tertiary);
+  }
+  .cat.collapsed .chevron { transform: rotate(-90deg); }
+  .cat-body { padding: 6px 16px 12px; }
+  .cat.collapsed .cat-body { display: none; }
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+    min-height: 44px;
+  }
+  .item:last-child { border-bottom: none; }
+  .item input[type=checkbox] {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .qty-input {
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 14px;
+    padding: 6px 2px !important;
+    height: 32px;
+  }
+  .item-name {
+    flex: 1;
+    font-size: 14px;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .item-name.unchecked { color: var(--text-tertiary); text-decoration: line-through; }
+  .item-note {
+    font-size: 11px;
+    color: var(--warning-text);
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .item-del {
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 8px;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .add-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .add-row input {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  .add-row button {
+    padding: 8px 14px;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    padding: 12px 0;
+    margin: 16px -16px 0;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .actions button { font-size: 13px; padding: 10px 14px; }
+  .preview {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    white-space: pre;
+    max-height: 280px;
+    overflow: auto;
+    display: none;
+    color: var(--text);
+  }
+  .preview.on { display: block; }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 12px 20px;
+    background: var(--success-bg);
+    color: var(--success);
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    transition: transform 0.25s;
+    z-index: 100;
+    max-width: 90vw;
+    text-align: center;
+  }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+  .toast.error {
+    background: var(--danger-bg);
+    color: var(--danger);
+  }
+  .empty {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    padding: 16px;
+    text-align: center;
+  }
+  .hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+  @media (max-width: 480px) {
+    .container { padding: 12px; }
+    h1 { font-size: 20px; }
+    .row { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1><span class="icon-luggage"></span> Family Packing</h1>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label>Destination</label>
+        <input type="text" id="pk-dest" placeholder="e.g. Berkeley, CA" autocomplete="off" />
+      </div>
+      <div>
+        <label>Start date</label>
+        <input type="date" id="pk-start" />
+      </div>
+      <div>
+        <label>Days</label>
+        <input type="number" id="pk-days" min="1" max="60" value="5" />
+      </div>
+      <div>
+        <label>Trip type</label>
+        <select id="pk-type">
+          <option value="casual">Casual / family</option>
+          <option value="business">Business</option>
+          <option value="beach">Beach</option>
+          <option value="outdoor">Outdoor / hiking</option>
+          <option value="city">City / urban</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top: 12px;">
+      <label>Travelers</label>
+      <div class="chip-row" id="pk-trav">
+        <button type="button" class="chip on" data-t="erin">Erin</button>
+        <button type="button" class="chip" data-t="omar">Omar</button>
+        <button type="button" class="chip" data-t="lena">Lena</button>
+        <button type="button" class="chip" data-t="faye">Faye</button>
+        <button type="button" class="chip on" data-t="shared">Shared</button>
+        <button type="button" class="chip on" data-t="home">Home prep</button>
+      </div>
+    </div>
+    <div class="weather-box" id="pk-weather"></div>
+    <div style="margin-top: 14px;">
+      <button type="button" class="primary" id="pk-load">Build / refresh list</button>
+    </div>
+    <p class="hint">Custom items you add stay saved on this device. Selections reset when you rebuild.</p>
+  </div>
+
+  <div id="pk-list-section" style="display: none;">
+    <div class="summary">
+      <span><b id="pk-stat-checked">0</b> selected</span>
+      <span><b id="pk-stat-total">0</b> total</span>
+    </div>
+    <div id="pk-list"></div>
+    <div class="actions">
+      <button type="button" id="pk-check-all">Check all</button>
+      <button type="button" id="pk-uncheck-all">Uncheck all</button>
+      <button type="button" id="pk-preview-btn">Preview</button>
+      <button type="button" class="primary" id="pk-copy">Copy for Reminders</button>
+    </div>
+    <div class="preview" id="pk-preview"></div>
+  </div>
+</div>
+
+<div class="toast" id="pk-toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // === TEMPLATES ===
+  const ADULT_TEMPLATE = {
+    'Clothes': [
+      {n: 'Underwear', q: 'days+1'},
+      {n: 'Bras', q: 'days/3', min: 2, max: 4},
+      {n: 'Socks', q: 'days+1'},
+      {n: 'Undershirts', q: 'days/2'},
+      {n: 'Tops', q: 'days'},
+      {n: 'Pants/jeans', q: 'days/3', min: 2, max: 4},
+      {n: 'Shorts', q: 'days/3', min: 1, max: 3, w: 'hot'},
+      {n: 'Sweaters', q: 'days/4', min: 1, max: 3},
+      {n: 'Dresses', q: 'days/4', min: 0, max: 2},
+      {n: 'Pajamas/lounge', q: 'days/3', min: 1, max: 3},
+      {n: 'Swimsuit', q: 1, w: 'swim'},
+      {n: 'Rain jacket', q: 1, w: 'rain'},
+      {n: 'Warm coat', q: 1, w: 'cold'},
+      {n: 'Light jacket', q: 1},
+      {n: 'Shoes (walking)', q: 1},
+      {n: 'Shoes (dressy)', q: 1, min: 0},
+      {n: 'Belt', q: 1, min: 0},
+    ],
+    'Accessories': [
+      {n: 'Sunglasses', q: 1, w: 'sun'},
+      {n: 'Gloves', q: 1, w: 'cold'},
+      {n: 'Hat (warm)', q: 1, w: 'cold'},
+      {n: 'Hat (sun)', q: 1, w: 'sun'},
+      {n: 'Glasses', q: 1},
+      {n: 'Contacts', q: 'days'},
+      {n: 'Hair ties/clips', q: 1},
+      {n: 'Earrings', q: 1, min: 0},
+      {n: 'Bags/purse', q: 1},
+    ],
+    'Toiletries & meds': [
+      {n: 'Fiber gummies', q: 1},
+      {n: 'Gummy vitamins', q: 1},
+      {n: 'Med case with PRNs', q: 1},
+      {n: 'Xiidra', q: 1},
+      {n: 'Eye drops', q: 1},
+      {n: 'Makeup', q: 1},
+      {n: 'Makeup remover', q: 1},
+      {n: 'Mouth guard + case', q: 1},
+      {n: 'Eye shade', q: 1},
+      {n: 'Efferdent', q: 1},
+      {n: 'Flossers', q: 1},
+      {n: 'Nasal gel', q: 1},
+      {n: 'Skin regimen', q: 1},
+      {n: 'Shampoo', q: 1},
+      {n: 'Conditioner', q: 1},
+      {n: 'Body wash', q: 1},
+      {n: 'Loofah', q: 1},
+      {n: 'Toothbrush + charger', q: 1},
+      {n: 'Toothpaste', q: 1},
+      {n: 'Deodorant', q: 1},
+      {n: 'Nail clippers', q: 1},
+      {n: 'Nail file', q: 1},
+      {n: 'Hair product', q: 1},
+      {n: 'Hairbrush', q: 1},
+      {n: 'Sunscreen', q: 1, w: 'sun'},
+      {n: 'Sex stuff', q: 1, min: 0},
+    ],
+    'Electronics & docs': [
+      {n: 'Passport / travel docs', q: 1},
+      {n: 'Wallet', q: 1},
+      {n: 'Keys', q: 1},
+      {n: 'Phone', q: 1},
+      {n: 'Phone charger', q: 1},
+      {n: 'Computer', q: 1},
+      {n: 'Computer charger', q: 1},
+      {n: 'iPad', q: 1},
+      {n: 'iPad charger', q: 1},
+      {n: 'Kindle / book', q: 1},
+      {n: 'Headphones', q: 1},
+      {n: 'Water bottle', q: 1},
+      {n: 'Games', q: 1, min: 0},
+    ],
+  };
+
+  const LENA_TEMPLATE = {
+    'Lena clothes': [
+      {n: 'Outfits (top+bottom)', q: 'days+2', min: 5, max: 12},
+      {n: 'Pajamas (onesie+shorts)', q: 'days/2', min: 3, max: 5},
+      {n: 'Sleep sacks', q: 2, min: 1, max: 2},
+      {n: 'Training underwear', q: 'days+2', min: 6},
+      {n: 'Socks', q: 'days+2', min: 6, max: 10},
+      {n: 'LL Bean white fleece jacket', q: 1, w: 'cold'},
+      {n: 'Hoodie/sweater', q: 1},
+      {n: 'Rain jacket', q: 1, w: 'rain'},
+      {n: 'Warm coat', q: 1, w: 'cold'},
+      {n: 'Sneakers', q: 1},
+      {n: 'Rain boots', q: 1, w: 'rain'},
+      {n: 'Beanie', q: 1, w: 'cold'},
+      {n: 'Sun hat', q: 1, w: 'sun'},
+      {n: 'Gloves', q: 1, w: 'cold'},
+      {n: 'Swimsuit', q: 1, w: 'swim'},
+    ],
+    'Lena diapering & toiletries': [
+      {n: 'Size 4 pullups', q: 'days*5'},
+      {n: 'Wipes', q: 1},
+      {n: 'Changing pad', q: 1},
+      {n: 'Baby shampoo', q: 1},
+      {n: 'Baby lotion', q: 1},
+      {n: 'Toothbrush', q: 1},
+      {n: 'Baby toothpaste', q: 1},
+      {n: 'Washcloths', q: 3},
+      {n: 'Meds', q: 1},
+    ],
+    'Lena feeding': [
+      {n: 'Sippy cup (straw)', q: 2},
+      {n: 'Water bottle', q: 1},
+      {n: 'Snacks: Bamba/Yogis/pouches', q: 1},
+      {n: 'Peanut butter bars', q: 1},
+      {n: 'String cheese', q: 1},
+      {n: 'Yogurt pouches', q: 1},
+      {n: 'Bibs', q: 3},
+      {n: 'Toddler plate', q: 1},
+      {n: 'Utensils', q: 1},
+      {n: 'Snack container', q: 1},
+      {n: 'Almond milk', q: 1},
+      {n: 'Miralax', q: 1},
+      {n: 'Senna', q: 1},
+      {n: 'Probiotic', q: 1},
+      {n: 'Booster seat (order to destination?)', q: 1, min: 0},
+    ],
+    'Lena sleep': [
+      {n: 'Titi (stuffie)', q: 1},
+      {n: 'Elmo', q: 1},
+      {n: 'Water bottles for sleep', q: 2},
+      {n: 'Nanit monitor', q: 1},
+      {n: 'White noise machine (Nanit)', q: 1},
+    ],
+    'Lena fun': [
+      {n: 'Tablet (charged, videos downloaded)', q: 1},
+      {n: 'Tablet charger', q: 1},
+      {n: 'Stickers', q: 1},
+      {n: 'Books', q: 2},
+      {n: 'Stuffies', q: 1},
+      {n: 'Small toys', q: 1},
+    ],
+  };
+
+  const FAYE_TEMPLATE = {
+    'Faye clothes': [
+      {n: 'Outfits (onesies or shirt+pants)', q: 'days+3', min: 7, max: 14},
+      {n: 'Pajamas', q: 'days/2', min: 3, max: 5},
+      {n: 'Teddy suit', q: 1, w: 'cold'},
+      {n: 'Sleep sacks', q: 2},
+      {n: 'Warm hat', q: 1, w: 'cold'},
+      {n: 'Sun hat', q: 1, w: 'sun'},
+      {n: 'Socks/booties', q: 'days/2', min: 4, max: 7},
+      {n: 'Bibs', q: 8},
+      {n: 'Stroller blanket', q: 1},
+      {n: 'Swim diaper + suit', q: 1, w: 'swim'},
+    ],
+    'Faye diapering & toiletries': [
+      {n: 'Size 2 diapers', q: 'days*8'},
+      {n: 'Wipes', q: 1},
+      {n: 'Diaper cream', q: 1},
+      {n: 'Baby lotion', q: 1},
+      {n: 'Nail clippers', q: 1},
+      {n: 'Infant thermometer', q: 1},
+      {n: 'Liquid Tylenol', q: 1},
+      {n: 'Liquid Motrin', q: 1},
+      {n: 'Ziplock bags', q: 1},
+      {n: 'Washcloths', q: 3},
+    ],
+    'Faye feeding': [
+      {n: 'Formula powder', q: 1},
+      {n: 'Bottles + nipples', q: 4},
+      {n: 'Bottle brush', q: 1},
+      {n: 'Breast pump', q: 1},
+      {n: 'Pump charger + tubing', q: 1},
+      {n: 'Pump cups', q: 1},
+      {n: 'Cooler lunchbox', q: 1},
+      {n: 'Breast milk bags', q: 1},
+      {n: 'Nursing coverup', q: 1},
+      {n: 'Baby spoon', q: 1},
+      {n: 'Baby bowl', q: 1},
+    ],
+    'Faye sleep': [
+      {n: 'Travel crib', q: 1},
+      {n: 'Travel crib sheets', q: 2},
+      {n: 'Pacifiers (BIBS)', q: 4},
+      {n: 'Sophie the giraffe', q: 1},
+      {n: 'Monkey monitor (both parts)', q: 1},
+    ],
+  };
+
+  const SHARED_TEMPLATE = {
+    'Gear': [
+      {n: 'Yoyo stroller', q: 1},
+      {n: 'Doona', q: 1},
+      {n: 'Baby carrier', q: 1},
+      {n: 'Lena car seat', q: 1},
+      {n: 'Ride safer vest (to airport)', q: 1},
+      {n: 'Order stroller to destination?', q: 1, min: 0},
+    ],
+    'Diaper bag for plane': [
+      {n: 'Size 2 diapers (5)', q: 1},
+      {n: 'Size 4 pullups (5)', q: 1},
+      {n: 'Wipes', q: 1},
+      {n: 'Change of clothes each (2)', q: 1},
+      {n: 'Formula + bottle', q: 1},
+      {n: 'Pacifier + clip', q: 1},
+      {n: 'Hand sanitizer', q: 1},
+      {n: 'Plastic bags', q: 1},
+      {n: 'Blue tablet + charger', q: 1},
+      {n: 'Pink tablet (loaded)', q: 1},
+      {n: 'Mr Pencil', q: 1},
+      {n: 'Headphones', q: 2},
+      {n: 'Yoto + favorite cards', q: 1},
+      {n: 'Water Wow / sticker books', q: 1},
+      {n: 'Doodle board', q: 1},
+      {n: 'Fidget toy', q: 1},
+      {n: 'Mini magnatiles', q: 1},
+      {n: 'Snacks (goldfish, pouch)', q: 1},
+      {n: 'I Spy book', q: 1},
+    ],
+  };
+
+  const HOME_TEMPLATE = {
+    'Home before leaving': [
+      {n: 'Take out trash', q: 1},
+      {n: 'Empty fridge perishables', q: 1},
+      {n: 'Thermostat to away mode', q: 1},
+      {n: 'Lock all windows', q: 1},
+      {n: 'Water plants', q: 1},
+      {n: 'Mail hold or pickup arranged', q: 1},
+      {n: 'Dishwasher empty', q: 1},
+      {n: 'Laundry done', q: 1},
+      {n: 'Unplug non-essentials', q: 1},
+    ],
+  };
+
+  const TRAVELERS = {
+    erin: { label: 'Erin', template: ADULT_TEMPLATE },
+    omar: { label: 'Omar', template: ADULT_TEMPLATE },
+    lena: { label: 'Lena', template: LENA_TEMPLATE },
+    faye: { label: 'Faye', template: FAYE_TEMPLATE },
+    shared: { label: 'Family / shared', template: SHARED_TEMPLATE },
+    home: { label: 'Home prep', template: HOME_TEMPLATE },
+  };
+
+  // === STATE ===
+  let state = {
+    dest: '',
+    start: '',
+    days: 5,
+    type: 'casual',
+    travelers: new Set(['erin', 'shared', 'home']),
+    weather: null,
+    selections: {},
+    customItems: {},
+  };
+
+  // === STORAGE (localStorage — survives across sessions on the device) ===
+  function loadStored() {
+    try {
+      const c = localStorage.getItem('packing:custom');
+      if (c) state.customItems = JSON.parse(c);
+    } catch (e) {}
+    try {
+      const s = localStorage.getItem('packing:settings');
+      if (s) {
+        const p = JSON.parse(s);
+        if (p.dest) state.dest = p.dest;
+        if (p.travelers) state.travelers = new Set(p.travelers);
+        if (p.type) state.type = p.type;
+      }
+    } catch (e) {}
+  }
+  function saveCustom() {
+    try { localStorage.setItem('packing:custom', JSON.stringify(state.customItems)); } catch (e) {}
+  }
+  function saveSettings() {
+    try {
+      localStorage.setItem('packing:settings', JSON.stringify({
+        dest: state.dest,
+        travelers: Array.from(state.travelers),
+        type: state.type,
+      }));
+    } catch (e) {}
+  }
+
+  // === QTY ===
+  function calcQty(rule, days) {
+    if (typeof rule === 'number') return rule;
+    if (rule === 'one') return 1;
+    if (rule === 'days') return days;
+    let m;
+    if ((m = /^days\+(\d+)$/.exec(rule))) return days + parseInt(m[1]);
+    if ((m = /^days\/(\d+)$/.exec(rule))) return Math.ceil(days / parseInt(m[1]));
+    if ((m = /^days\*(\d+)$/.exec(rule))) return days * parseInt(m[1]);
+    return 1;
+  }
+  function shouldShowWeather(tag, w) {
+    if (!tag) return true;
+    if (!w) return true;
+    if (tag === 'cold') return w.tempLow != null && w.tempLow < 50;
+    if (tag === 'hot') return w.tempHigh != null && w.tempHigh > 75;
+    if (tag === 'rain') return !!w.willRain;
+    if (tag === 'sun') return w.tempHigh != null && w.tempHigh > 60;
+    if (tag === 'swim') return w.tempHigh != null && w.tempHigh > 75;
+    return true;
+  }
+
+  // === WEATHER ===
+  async function fetchWeather(dest, startDate, days) {
+    if (!dest) return null;
+    const fetchOpts = { mode: 'cors', credentials: 'omit' };
+    try {
+      const geoR = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dest)}&count=1`,
+        fetchOpts
+      );
+      if (!geoR.ok) return null;
+      const geo = await geoR.json();
+      if (!geo.results || !geo.results.length) return { notFound: true };
+      const { latitude, longitude, name, country } = geo.results[0];
+      const startD = startDate ? new Date(startDate + 'T00:00:00') : new Date();
+      const endD = new Date(startD);
+      endD.setDate(endD.getDate() + Math.min(days - 1, 15));
+      const fmt = d => d.toISOString().slice(0, 10);
+      const today = new Date();
+      const daysUntil = Math.floor((startD - today) / 86400000);
+      let url;
+      if (daysUntil > 14 || daysUntil < -1) {
+        const month = startD.getUTCMonth() + 1;
+        const lastYear = today.getUTCFullYear() - 1;
+        const ms = `${lastYear}-${String(month).padStart(2,'0')}-01`;
+        const me = new Date(lastYear, month, 0).toISOString().slice(0, 10);
+        url = `https://archive-api.open-meteo.com/v1/archive?latitude=${latitude}&longitude=${longitude}&start_date=${ms}&end_date=${me}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit`;
+      } else {
+        url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&start_date=${fmt(startD)}&end_date=${fmt(endD)}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&temperature_unit=fahrenheit&timezone=auto`;
+      }
+      const wR = await fetch(url, fetchOpts);
+      if (!wR.ok) return null;
+      const w = await wR.json();
+      if (!w.daily) return null;
+      const highs = w.daily.temperature_2m_max.filter(x => x != null);
+      const lows = w.daily.temperature_2m_min.filter(x => x != null);
+      const precip = w.daily.precipitation_sum || [];
+      const precipProb = w.daily.precipitation_probability_max || [];
+      if (!highs.length || !lows.length) return null;
+      return {
+        location: name + (country ? ', ' + country : ''),
+        tempHigh: Math.round(Math.max(...highs)),
+        tempLow: Math.round(Math.min(...lows)),
+        willRain: precip.some(p => p > 1) || precipProb.some(p => p > 50),
+        isClimate: daysUntil > 14 || daysUntil < -1,
+      };
+    } catch (e) {
+      
+      return null;
+    }
+  }
+
+  // === BUILD LIST ===
+  function buildList() {
+    const days = state.days;
+    state.selections = {};
+    for (const t of state.travelers) {
+      const tc = TRAVELERS[t];
+      if (!tc) continue;
+      state.selections[t] = {};
+      for (const cat of Object.keys(tc.template)) {
+        state.selections[t][cat] = [];
+        for (const item of tc.template[cat]) {
+          if (!shouldShowWeather(item.w, state.weather)) continue;
+          let q = calcQty(item.q, days);
+          if (item.min != null) q = Math.max(q, item.min);
+          if (item.max != null) q = Math.min(q, item.max);
+          state.selections[t][cat].push({
+            name: item.n, qty: q, checked: q > 0, tag: item.w || null,
+          });
+        }
+        const custom = (state.customItems[t] && state.customItems[t][cat]) || [];
+        for (const cn of custom) {
+          state.selections[t][cat].push({ name: cn, qty: 1, checked: true, custom: true });
+        }
+      }
+    }
+    render();
+  }
+
+  // === RENDER ===
+  function render() {
+    const list = document.getElementById('pk-list');
+    list.innerHTML = '';
+    document.getElementById('pk-list-section').style.display = 'block';
+
+    let total = 0, checked = 0;
+
+    for (const t of state.travelers) {
+      if (!state.selections[t]) continue;
+      const tc = TRAVELERS[t];
+      const section = document.createElement('div');
+      section.className = 'traveler-section';
+      let tCount = 0, tChecked = 0;
+      Object.values(state.selections[t]).forEach(items => {
+        tCount += items.length;
+        tChecked += items.filter(i => i.checked).length;
+      });
+      total += tCount;
+      checked += tChecked;
+      const h = document.createElement('div');
+      h.className = 'traveler-h';
+      h.innerHTML = `<span>${tc.label}</span><span class="count">${tChecked} / ${tCount}</span>`;
+      section.appendChild(h);
+
+      for (const cat of Object.keys(state.selections[t])) {
+        const items = state.selections[t][cat];
+        const catEl = document.createElement('div');
+        catEl.className = 'cat';
+        const cChecked = items.filter(i => i.checked).length;
+        catEl.innerHTML = `
+          <div class="cat-h">
+            <div class="cat-h-title">${cat}<span class="count">${cChecked} / ${items.length}</span></div>
+            <span class="chevron">▾</span>
+          </div>
+          <div class="cat-body"></div>
+        `;
+        catEl.querySelector('.cat-h').addEventListener('click', () => catEl.classList.toggle('collapsed'));
+        const body = catEl.querySelector('.cat-body');
+
+        items.forEach((item, idx) => {
+          const row = document.createElement('div');
+          row.className = 'item';
+          const noteHtml = item.tag === 'rain' ? '<span class="item-note">rain</span>'
+                       : item.tag === 'cold' ? '<span class="item-note">cold</span>'
+                       : item.tag === 'hot' ? '<span class="item-note">hot</span>'
+                       : item.tag === 'swim' ? '<span class="item-note">swim weather</span>'
+                       : '';
+          row.innerHTML = `
+            <input type="checkbox" ${item.checked ? 'checked' : ''} />
+            <input type="number" class="qty-input" value="${item.qty}" min="0" />
+            <span class="item-name${item.checked ? '' : ' unchecked'}">${item.name}</span>
+            ${noteHtml}
+            ${item.custom ? '<button type="button" class="item-del" aria-label="remove">×</button>' : ''}
+          `;
+          const cb = row.querySelector('input[type=checkbox]');
+          const qty = row.querySelector('.qty-input');
+          const nm = row.querySelector('.item-name');
+          cb.addEventListener('change', () => {
+            item.checked = cb.checked;
+            nm.classList.toggle('unchecked', !cb.checked);
+            updateCounts();
+          });
+          qty.addEventListener('input', () => { item.qty = parseInt(qty.value) || 0; });
+          if (item.custom) {
+            row.querySelector('.item-del').addEventListener('click', e => {
+              e.stopPropagation();
+              items.splice(idx, 1);
+              if (state.customItems[t] && state.customItems[t][cat]) {
+                const ci = state.customItems[t][cat].indexOf(item.name);
+                if (ci >= 0) state.customItems[t][cat].splice(ci, 1);
+                saveCustom();
+              }
+              render();
+            });
+          }
+          body.appendChild(row);
+        });
+
+        const addRow = document.createElement('div');
+        addRow.className = 'add-row';
+        addRow.innerHTML = `<input type="text" placeholder="Add to ${cat}..." /><button type="button">+</button>`;
+        const addInput = addRow.querySelector('input');
+        const addBtn = addRow.querySelector('button');
+        const doAdd = () => {
+          const name = addInput.value.trim();
+          if (!name) return;
+          items.push({ name, qty: 1, checked: true, custom: true });
+          if (!state.customItems[t]) state.customItems[t] = {};
+          if (!state.customItems[t][cat]) state.customItems[t][cat] = [];
+          state.customItems[t][cat].push(name);
+          saveCustom();
+          addInput.value = '';
+          render();
+        };
+        addBtn.addEventListener('click', doAdd);
+        addInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAdd(); }});
+        body.appendChild(addRow);
+
+        section.appendChild(catEl);
+      }
+      list.appendChild(section);
+    }
+    document.getElementById('pk-stat-checked').textContent = checked;
+    document.getElementById('pk-stat-total').textContent = total;
+  }
+
+  function updateCounts() {
+    let total = 0, checked = 0;
+    for (const t of Object.keys(state.selections)) {
+      for (const cat of Object.keys(state.selections[t])) {
+        const items = state.selections[t][cat];
+        total += items.length;
+        checked += items.filter(i => i.checked).length;
+      }
+    }
+    document.getElementById('pk-stat-checked').textContent = checked;
+    document.getElementById('pk-stat-total').textContent = total;
+    document.querySelectorAll('.cat').forEach(el => {
+      const cb = el.querySelectorAll('input[type=checkbox]');
+      const c = Array.from(cb).filter(x => x.checked).length;
+      const ct = el.querySelector('.cat-h .count');
+      if (ct) ct.textContent = `${c} / ${cb.length}`;
+    });
+    // traveler header counts
+    document.querySelectorAll('.traveler-section').forEach(section => {
+      const cbs = section.querySelectorAll('.item input[type=checkbox]');
+      const c = Array.from(cbs).filter(x => x.checked).length;
+      const ct = section.querySelector('.traveler-h .count');
+      if (ct) ct.textContent = `${c} / ${cbs.length}`;
+    });
+  }
+
+  function buildExport() {
+    const lines = [];
+    for (const t of state.travelers) {
+      if (!state.selections[t]) continue;
+      const cats = state.selections[t];
+      let any = false;
+      for (const cat of Object.keys(cats)) {
+        if (cats[cat].some(i => i.checked && i.qty > 0)) { any = true; break; }
+      }
+      if (!any) continue;
+      lines.push(TRAVELERS[t].label);
+      for (const cat of Object.keys(cats)) {
+        const items = cats[cat].filter(i => i.checked && i.qty > 0);
+        if (!items.length) continue;
+        lines.push('\t' + cat);
+        for (const item of items) {
+          const q = item.qty > 1 ? ` (${item.qty})` : '';
+          lines.push('\t\t' + item.name + q);
+        }
+      }
+    }
+    return lines.join('\n');
+  }
+
+  function toast(msg, isError) {
+    const el = document.getElementById('pk-toast');
+    el.textContent = msg;
+    el.classList.toggle('error', !!isError);
+    el.classList.add('on');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove('on'), 3000);
+  }
+
+  function renderWeather() {
+    const el = document.getElementById('pk-weather');
+    if (!state.weather) { el.classList.remove('on'); return; }
+    const w = state.weather;
+    const label = w.isClimate ? 'Seasonal estimate' : 'Forecast';
+    let txt = `<b>${label} for ${w.location}:</b> highs around <b>${w.tempHigh}°F</b>, lows around <b>${w.tempLow}°F</b>`;
+    if (w.willRain) txt += `, <b>rain likely</b>`;
+    el.innerHTML = txt;
+    el.classList.add('on');
+  }
+
+  // === EVENTS ===
+  document.getElementById('pk-trav').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const t = chip.dataset.t;
+    if (state.travelers.has(t)) state.travelers.delete(t);
+    else state.travelers.add(t);
+    chip.classList.toggle('on');
+    saveSettings();
+  });
+
+  document.getElementById('pk-dest').addEventListener('input', e => { state.dest = e.target.value; });
+  document.getElementById('pk-dest').addEventListener('blur', saveSettings);
+  document.getElementById('pk-start').addEventListener('change', e => { state.start = e.target.value; });
+  document.getElementById('pk-days').addEventListener('input', e => { state.days = Math.max(1, parseInt(e.target.value) || 1); });
+  document.getElementById('pk-type').addEventListener('change', e => { state.type = e.target.value; saveSettings(); });
+
+  document.getElementById('pk-load').addEventListener('click', async () => {
+    const btn = document.getElementById('pk-load');
+    btn.disabled = true;
+    const origText = btn.textContent;
+    btn.textContent = 'Fetching weather...';
+    const wResult = await fetchWeather(state.dest, state.start, state.days);
+    if (wResult && wResult.notFound) {
+      state.weather = null;
+      toast('Destination not found, building list without weather', true);
+    } else if (!wResult && state.dest) {
+      state.weather = null;
+      toast('Weather unavailable, list built without weather');
+    } else {
+      state.weather = wResult;
+    }
+    renderWeather();
+    buildList();
+    btn.disabled = false;
+    btn.textContent = origText;
+  });
+
+  document.getElementById('pk-check-all').addEventListener('click', () => {
+    for (const t of Object.keys(state.selections))
+      for (const cat of Object.keys(state.selections[t]))
+        state.selections[t][cat].forEach(i => i.checked = true);
+    render();
+  });
+  document.getElementById('pk-uncheck-all').addEventListener('click', () => {
+    for (const t of Object.keys(state.selections))
+      for (const cat of Object.keys(state.selections[t]))
+        state.selections[t][cat].forEach(i => i.checked = false);
+    render();
+  });
+
+  document.getElementById('pk-preview-btn').addEventListener('click', () => {
+    const el = document.getElementById('pk-preview');
+    el.textContent = buildExport() || '(nothing selected)';
+    el.classList.toggle('on');
+  });
+
+  document.getElementById('pk-copy').addEventListener('click', async () => {
+    const txt = buildExport();
+    if (!txt) { toast('Nothing checked to copy', true); return; }
+    try {
+      await navigator.clipboard.writeText(txt);
+      toast('Copied! Paste into Reminders, then swipe-right to indent sub-items.');
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.style.position = 'fixed';
+      ta.style.top = '0';
+      ta.style.left = '0';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); toast('Copied to clipboard'); }
+      catch (e2) {
+        toast('Copy failed — see preview below', true);
+        document.getElementById('pk-preview').textContent = txt;
+        document.getElementById('pk-preview').classList.add('on');
+      }
+      document.body.removeChild(ta);
+    }
+  });
+
+  // INIT
+  loadStored();
+  if (state.dest) document.getElementById('pk-dest').value = state.dest;
+  document.getElementById('pk-type').value = state.type;
+  document.querySelectorAll('#pk-trav .chip').forEach(c => {
+    c.classList.toggle('on', state.travelers.has(c.dataset.t));
+  });
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('pk-start').value = tomorrow.toISOString().slice(0, 10);
+  state.start = document.getElementById('pk-start').value;
+})();
+</script>
+
+</body>
+</html>
