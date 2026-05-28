@@ -492,7 +492,7 @@
       <button type="button" id="pk-check-all">Check all</button>
       <button type="button" id="pk-uncheck-all">Uncheck all</button>
       <button type="button" id="pk-preview-btn">Preview</button>
-      <button type="button" class="primary" id="pk-copy">Copy for Reminders</button>
+      <button type="button" class="primary" id="pk-copy">Send to TickTick</button>
     </div>
     <div class="preview" id="pk-preview"></div>
   </div>
@@ -507,37 +507,39 @@
   // === TEMPLATES ===
   const ADULT_TEMPLATE = {
     'Clothes': [
-      {n: 'Underwear', q: 'days+1'},
+      {n: 'Underwear', q: 'days+3'},
       {n: 'Bras', q: 'days/3', min: 2, max: 4},
+      {n: 'Compression socks', q: 0},
       {n: 'Socks', q: 'days+1'},
-      {n: 'Compression socks', q: 1},
       {n: 'Tops', q: 'days'},
-      {n: 'Pants/jeans', q: 'days/3', min: 2, max: 4},
-      {n: 'Shorts', q: 'days/3', min: 1, max: 3, w: 'hot'},
       {n: 'Sweaters', q: 'days/4', min: 1, max: 3},
-      {n: 'Dresses', q: 'days/4', min: 0, max: 2},
+      {n: 'Pants/jeans', q: 'days/3', min: 2, max: 4},
+      {n: 'Leggings', q: 'days/4', min: 1, max: 3},
+      {n: 'Shorts', q: 'days/3', min: 1, max: 3, w: 'hot'},
+      {n: 'Dress/jumpsuit', q: 'days/4', min: 0, max: 2},
       {n: 'Pajamas/lounge', q: 'days/3', min: 1, max: 3},
-      {n: 'Swimsuit', q: 1, w: 'swim'},
-      {n: 'Light jacket', q: 1},
-      {n: 'Rain jacket', q: 1, w: 'rain'},
-      {n: 'Warm coat', q: 1, w: 'cold'},
-      {n: 'Shoes (walking)', q: 1},
-      {n: 'Shoes (gym)', q: 1},
-      {n: 'Shoes (dressy)', q: 1, min: 0},
-      {n: 'Belt', q: 1, min: 0},
+      {n: 'Swimsuit', q: 0, w: 'swim'},
+      {n: 'Light jacket', q: 0},
+      {n: 'Rain jacket', q: 0, w: 'rain'},
+      {n: 'Warm coat', q: 0, w: 'cold'},
+      {n: 'Shoes (walking)', q: 0},
+      {n: 'Shoes (gym)', q: 0},
+      {n: 'Shoes (dressy)', q: 0, min: 0},
+      {n: 'Belt', q: 0, min: 0},
     ],
     'Accessories': [
-      {n: 'Sunglasses', q: 1, w: 'sun'},
-      {n: 'Gloves', q: 1, w: 'cold'},
-      {n: 'Hat (warm)', q: 1, w: 'cold'},
-      {n: 'Hat (sun)', q: 1, w: 'sun'},
-      {n: 'Glasses', q: 1},
+      {n: 'Sunglasses', q: 0, w: 'sun'},
+      {n: 'Gloves', q: 0, w: 'cold'},
+      {n: 'Hat (warm)', q: 0, w: 'cold'},
+      {n: 'Hat (sun)', q: 0, w: 'sun'},
+      {n: 'Glasses', q: 0},
       {n: 'Contacts', q: 'days'},
-      {n: 'Hair ties/clips', q: 1},
-      {n: 'Earrings', q: 1, min: 0},
-      {n: 'Jewelry', q: 1, min: 0},
-      {n: 'OTF band', q: 1},
-      {n: 'Bags/purse', q: 1},
+      {n: 'Hair ties/clips', q: 0},
+      {n: 'Earrings', q: 0, min: 0},
+      {n: 'Jewelry', q: 0, min: 0},
+      {n: 'Apple Watch + charger', q: 0},
+      {n: 'OTF band', q: 0},
+      {n: 'Bags/purse', q: 0},
     ],
   };
 
@@ -546,220 +548,203 @@
       {n: 'Underwear', q: 'days+1'},
       {n: 'Socks', q: 'days+1'},
       {n: 'Tops', q: 'days'},
+      {n: 'Sweaters', q: 'days/4', min: 1, max: 3},
       {n: 'Pants/jeans', q: 'days/3', min: 2, max: 4},
       {n: 'Shorts', q: 'days/3', min: 1, max: 3, w: 'hot'},
-      {n: 'Sweaters', q: 'days/4', min: 1, max: 3},
       {n: 'Pajamas/lounge', q: 'days/3', min: 1, max: 3},
-      {n: 'Swimsuit', q: 1, w: 'swim'},
-      {n: 'Rain jacket', q: 1, w: 'rain'},
-      {n: 'Warm coat', q: 1, w: 'cold'},
-      {n: 'Light jacket', q: 1},
-      {n: 'Shoes (walking)', q: 1},
-      {n: 'Shoes (gym)', q: 1},
-      {n: 'Shoes (dressy)', q: 1, min: 0},
-      {n: 'Belt', q: 1, min: 0},
+      {n: 'Swimsuit', q: 0, w: 'swim'},
+      {n: 'Light jacket', q: 0},
+      {n: 'Rain jacket', q: 0, w: 'rain'},
+      {n: 'Warm coat', q: 0, w: 'cold'},
+      {n: 'Shoes (walking)', q: 0},
+      {n: 'Shoes (gym)', q: 0},
+      {n: 'Shoes (dressy)', q: 0, min: 0},
+      {n: 'Belt', q: 0, min: 0},
     ],
     'Accessories': [
-      {n: 'Sunglasses', q: 1, w: 'sun'},
-      {n: 'Gloves', q: 1, w: 'cold'},
-      {n: 'Hat (warm)', q: 1, w: 'cold'},
-      {n: 'Hat (sun)', q: 1, w: 'sun'},
-      {n: 'Glasses', q: 1},
-      {n: 'OTF band', q: 1},
-      {n: 'Bags/wallet', q: 1},
+      {n: 'Sunglasses', q: 0, w: 'sun'},
+      {n: 'Gloves', q: 0, w: 'cold'},
+      {n: 'Hat (warm)', q: 0, w: 'cold'},
+      {n: 'Hat (sun)', q: 0, w: 'sun'},
+      {n: 'Glasses', q: 0},
+      {n: 'OTF band', q: 0},
+      {n: 'Bags/wallet', q: 0},
     ],
   };
 
   const LENA_TEMPLATE = {
     'Lena clothes': [
-      {n: 'Beanie', q: 1, w: 'cold'},
-      {n: 'Sun hat', q: 1, w: 'sun'},
-      {n: 'Outfits (top+bottom)', q: 'days+2', min: 5, max: 12},
       {n: 'Training underwear', q: 'days+2', min: 6},
+      {n: 'Outfits (top+bottom)', q: 'days+2', min: 5, max: 12},
       {n: 'Pajamas', q: 'days/2', min: 3, max: 5},
-      {n: 'Light jacket', q: 1},
-      {n: 'Warm jacket', q: 1, w: 'cold'},
-      {n: 'Swimsuit', q: 1, w: 'swim'},
-      {n: 'Swim diaper', q: 1, w: 'swim'},
+      {n: 'Light jacket', q: 0},
+      {n: 'Warm jacket', q: 0, w: 'cold'},
+      {n: 'Swimsuit', q: 0, w: 'swim'},
+      {n: 'Swim diaper', q: 0, w: 'swim'},
       {n: 'Socks', q: 'days+2', min: 6, max: 10},
-      {n: 'Sneakers', q: 1},
-      {n: 'Rain boots', q: 1, w: 'rain'},
-      {n: 'Sandals', q: 1, w: 'hot'},
-      {n: 'Gloves', q: 1, w: 'cold'},
+      {n: 'Sneakers', q: 0},
+      {n: 'Rain boots', q: 0, w: 'rain'},
+      {n: 'Sandals', q: 0, w: 'hot'},
+      {n: 'Beanie', q: 0, w: 'cold'},
+      {n: 'Sun hat', q: 0, w: 'sun'},
+      {n: 'Gloves', q: 0, w: 'cold'},
     ],
-    'Lena toiletries': [
-      {n: 'Diapers', q: 1, orderable: true},
-      {n: 'Wipes', q: 1, orderable: true},
-      {n: 'Baby shampoo', q: 1, orderable: true},
-      {n: 'Baby lotion', q: 1, orderable: true},
-      {n: 'Baby toothpaste', q: 1, orderable: true},
-      {n: 'Toothbrush', q: 1},
-      {n: 'Washcloths', q: 3},
-      {n: 'Nail clippers', q: 1},
-      {n: 'Sunscreen (kids)', q: 1, w: 'sun'},
-      {n: 'Liquid Tylenol', q: 1},
-      {n: 'Liquid Motrin', q: 1},
-      {n: 'Meds', q: 1, orderable: true},
-      {n: 'Miralax', q: 1, orderable: true},
-      {n: 'Senna', q: 1, orderable: true},
-      {n: 'Probiotic', q: 1, orderable: true},
-    ],
-
-
     'Lena fun': [
-      {n: 'Tablet (charged, videos downloaded)', q: 1},
-      {n: 'Tablet charger', q: 1},
-      {n: 'Books', q: 2},
-      {n: 'Stickers', q: 1},
-      {n: 'Crayons + coloring book', q: 1},
-      {n: 'Playdough', q: 1},
-      {n: 'Bubbles', q: 1},
-      {n: 'Small toys', q: 1},
+      {n: 'Crayons + coloring book', q: 0},
+      {n: 'Playdough', q: 0},
+      {n: 'Bubbles', q: 0},
     ],
   };
 
   const FAYE_TEMPLATE = {
     'Faye clothes': [
-      {n: 'Warm hat', q: 1, w: 'cold'},
-      {n: 'Sun hat', q: 1, w: 'sun'},
       {n: 'Outfits (onesies or shirt+pants)', q: 'days+3', min: 7, max: 14},
       {n: 'Pajamas', q: 'days/2', min: 3, max: 5},
       {n: 'Sleep sacks', q: 2},
-      {n: 'Light jacket', q: 1},
-      {n: 'Warm jacket', q: 1, w: 'cold'},
-      {n: 'Swimsuit + swim diaper', q: 1, w: 'swim'},
-      {n: 'Bibs', q: 8},
+      {n: 'Light jacket', q: 0},
+      {n: 'Warm jacket', q: 0, w: 'cold'},
+      {n: 'Swimsuit + swim diaper', q: 0, w: 'swim'},
       {n: 'Socks/booties', q: 'days/2', min: 4, max: 7},
+      {n: 'Shoes', q: 0},
+      {n: 'Warm hat', q: 0, w: 'cold'},
+      {n: 'Sun hat', q: 0, w: 'sun'},
     ],
-    'Faye toiletries': [
-      {n: 'Diapers', q: 1, orderable: true},
-      {n: 'Wipes', q: 1, orderable: true},
-      {n: 'Diaper cream', q: 1, orderable: true},
-      {n: 'Baby lotion', q: 1, orderable: true},
-      {n: 'Baby shampoo', q: 1, orderable: true},
-      {n: 'Baby toothbrush / finger brush', q: 1},
-      {n: 'Washcloths', q: 3},
-      {n: 'Nail clippers', q: 1},
-      {n: 'Infant thermometer', q: 1},
-      {n: 'Sunscreen (baby)', q: 1, w: 'sun'},
-      {n: 'Liquid Tylenol', q: 1, orderable: true},
-      {n: 'Liquid Motrin', q: 1, orderable: true},
-      {n: 'Ziplock bags', q: 1},
-    ],
-
-
   };
 
   const SHARED_TEMPLATE = {
     'Toiletries & meds': [
-      {n: 'Shampoo', q: 1},
-      {n: 'Conditioner', q: 1},
-      {n: 'Body wash', q: 1},
-      {n: 'Loofah', q: 1},
-      {n: 'Toothbrush + charger (Erin)', q: 1},
-      {n: 'Toothbrush (Omar)', q: 1},
-      {n: 'Toothpaste', q: 1},
-      {n: 'Deodorant (x2)', q: 1},
-      {n: 'Lip balm', q: 1},
-      {n: 'Sunscreen', q: 1, w: 'sun'},
-      {n: 'Razor (Erin)', q: 1},
-      {n: 'Razor (Omar)', q: 1},
-      {n: 'Hair product', q: 1},
-      {n: 'Hairbrush', q: 1},
-      {n: 'Nail clippers', q: 1},
-      {n: 'Nail file', q: 1},
-      {n: 'Makeup', q: 1},
-      {n: 'Makeup remover', q: 1},
-      {n: 'Skin regimen', q: 1},
-      {n: 'Fiber gummies', q: 1},
-      {n: 'Gummy vitamins', q: 1},
-      {n: 'Med case with PRNs', q: 1},
-      {n: 'Tylenol / Advil', q: 1},
-      {n: 'Benadryl / Pepto', q: 1},
-      {n: 'Melatonin', q: 1},
-      {n: 'Xiidra', q: 1},
-      {n: 'Eye drops', q: 1},
-      {n: 'Mouth guard + case', q: 1},
-      {n: 'Eye shade', q: 1},
-      {n: 'Efferdent', q: 1},
-      {n: 'Flossers', q: 1},
-      {n: 'Nasal gel', q: 1},
-      {n: 'Sex stuff', q: 1, min: 0},
+      {n: 'Shampoo', q: 0, orderable: true},
+      {n: 'Conditioner', q: 0, orderable: true},
+      {n: 'Body wash', q: 0, orderable: true},
+      {n: 'Loofah', q: 0},
+      {n: 'Toothbrush + charger (Erin)', q: 0},
+      {n: 'Toothbrush (Omar)', q: 0},
+      {n: 'Toothpaste', q: 0},
+      {n: 'Deodorant (x2)', q: 0},
+      {n: 'Lip balm', q: 0},
+      {n: 'Sunscreen', q: 0, w: 'sun'},
+      {n: 'Razor (Erin)', q: 0},
+      {n: 'Razor (Omar)', q: 0},
+      {n: 'Hair product', q: 0},
+      {n: 'Hairbrush', q: 0},
+      {n: 'Nail clippers', q: 0},
+      {n: 'Nail file', q: 0},
+      {n: 'Makeup', q: 0},
+      {n: 'Makeup remover', q: 0},
+      {n: 'Skin regimen', q: 0},
+      {n: 'Fiber gummies', q: 0},
+      {n: 'Gummy vitamins', q: 0},
+      {n: 'Med case with PRNs', q: 0},
+      {n: 'Tylenol / Advil', q: 0},
+      {n: 'Benadryl / Pepto', q: 0},
+      {n: 'Melatonin', q: 0},
+      {n: 'Restasis', q: 0},
+      {n: 'Eye drops', q: 0},
+      {n: 'Mouth guard + case', q: 0},
+      {n: 'Eye shade', q: 0},
+      {n: 'Efferdent', q: 0},
+      {n: 'Flossers', q: 0},
+      {n: 'Nasal gel', q: 0},
+      {n: 'Sex stuff', q: 0, min: 0},
     ],
     'Electronics & docs': [
-      {n: 'Passports / travel docs', q: 1},
-      {n: 'Wallets', q: 1},
-      {n: 'Keys', q: 1},
-      {n: 'Phones (x2)', q: 1},
-      {n: 'Phone chargers (x2)', q: 1},
-      {n: 'Computer', q: 1},
-      {n: 'Computer charger', q: 1},
-      {n: 'iPad', q: 1},
-      {n: 'iPad charger', q: 1},
-      {n: 'Kindle / book', q: 1},
-      {n: 'Headphones (x2)', q: 1},
-      {n: 'Power bank', q: 1},
-      {n: 'Water bottles (x2)', q: 1},
+      {n: 'Passports / travel docs', q: 0},
+      {n: 'Wallets', q: 0},
+      {n: 'Keys', q: 0},
+      {n: 'Phones (x2)', q: 0},
+      {n: 'Phone chargers (x2)', q: 0},
+      {n: 'Computer', q: 0},
+      {n: 'Computer charger', q: 0},
+      {n: 'iPad', q: 0},
+      {n: 'iPad charger', q: 0},
+      {n: 'Kindle / book', q: 0},
+      {n: 'Headphones (x2)', q: 0},
+      {n: 'Power bank', q: 0},
+      {n: 'Water bottles (x2)', q: 0},
+    ],
+    'Kids toiletries': [
+      {n: 'Diapers (Lena)', q: 1, orderable: true},
+      {n: 'Diapers (Faye)', q: 1, orderable: true},
+      {n: 'Wipes', q: 0, orderable: true},
+      {n: 'Diaper cream', q: 0, orderable: true},
+      {n: 'Baby lotion', q: 0, orderable: true},
+      {n: 'Baby shampoo', q: 0, orderable: true},
+      {n: 'Toothbrush (Lena)', q: 0},
+      {n: 'Baby toothbrush / finger brush (Faye)', q: 0},
+      {n: 'Toothpaste', q: 0, orderable: true},
+      {n: 'Washcloths', q: 3},
+      {n: 'Nail clippers', q: 0},
+      {n: 'Infant thermometer', q: 0},
+      {n: 'Sunscreen (kids)', q: 0, w: 'sun'},
+      {n: 'Liquid Tylenol', q: 0, orderable: true},
+      {n: 'Liquid Motrin', q: 0, orderable: true},
+      {n: 'Meds', q: 0, orderable: true},
+      {n: 'Miralax', q: 0, orderable: true},
+      {n: 'Senna', q: 0, orderable: true},
+      {n: 'Probiotic', q: 0, orderable: true},
+      {n: 'Ziplock bags', q: 0},
     ],
     'Kids sleep': [
-      {n: 'Travel crib (Faye)', q: 1},
+      {n: 'Travel crib (Faye)', q: 0},
       {n: 'Travel crib sheets', q: 2},
-      {n: 'Nanit monitor (both parts)', q: 1},
-      {n: 'Sleep stuffie (Lena)', q: 1},
-      {n: 'Water bottle for sleep (Lena)', q: 1},
-      {n: 'Comfort toy (Faye)', q: 1},
+      {n: 'Nanit monitor (both parts)', q: 0},
+      {n: 'Sleep stuffie (Lena)', q: 0},
+      {n: 'Sleep stuffie (Faye)', q: 0},
+      {n: 'Water bottle for sleep (Lena)', q: 0},
+      {n: 'Comfort toy (Faye)', q: 0},
       {n: 'Pacifiers (Faye)', q: 4},
     ],
     'Kids feeding': [
-      {n: 'Formula powder', q: 1, orderable: true},
+      {n: 'Formula powder', q: 0, orderable: true},
       {n: 'Bottles + nipples', q: 4},
-      {n: 'Bottle brush', q: 1, orderable: true},
-      {n: 'Sippy/straw cup (Lena)', q: 1},
-      {n: 'Sippy/straw cup (Faye)', q: 1},
-      {n: 'Water bottle (Lena)', q: 1},
-      {n: 'Baby bowl', q: 1},
-      {n: 'Toddler plate', q: 1},
+      {n: 'Bottle brush', q: 0, orderable: true},
+      {n: 'Sippy/straw cup (Lena)', q: 0},
+      {n: 'Sippy/straw cup (Faye)', q: 0},
+      {n: 'Water bottle (Lena)', q: 0},
+      {n: 'Baby bowl', q: 0},
+      {n: 'Toddler plate', q: 0},
       {n: 'Baby spoon', q: 2},
-      {n: 'Utensils (Lena)', q: 1},
-      {n: 'Snack container', q: 1},
+      {n: 'Utensils (Lena)', q: 0},
+      {n: 'Snack container', q: 0},
       {n: 'Bibs (Lena)', q: 3},
-      {n: 'Clip-on high chair / travel seat', q: 1},
-      {n: 'Pouches / purees', q: 1, orderable: true},
-      {n: 'Finger food snacks', q: 1, orderable: true},
-      {n: 'Snacks: Bamba/Yogis/pouches', q: 1, orderable: true},
-      {n: 'Peanut butter bars', q: 1, orderable: true},
-      {n: 'String cheese', q: 1, orderable: true},
-      {n: 'Yogurt pouches', q: 1, orderable: true},
-      {n: 'Almond/oat milk', q: 1, orderable: true},
+      {n: 'Bibs (Faye)', q: 8},
+      {n: 'Clip-on high chair / travel seat', q: 0},
+      {n: 'Pouches / purees', q: 0, orderable: true},
+      {n: 'Finger food snacks', q: 0, orderable: true},
+      {n: 'Snacks: Bamba/Yogis/pouches', q: 0, orderable: true},
+      {n: 'Peanut butter bars', q: 0, orderable: true},
+      {n: 'String cheese', q: 0, orderable: true},
+      {n: 'Yogurt pouches', q: 0, orderable: true},
+      {n: 'Almond/oat milk', q: 0, orderable: true},
     ],
     'Gear': [
-      {n: 'Yoyo stroller', q: 1},
-      {n: 'Doona', q: 1},
-      {n: 'Baby carrier', q: 1},
-      {n: 'Lena car seat', q: 1},
-      {n: 'Ride safer vest (to airport)', q: 1},
+      {n: 'Yoyo stroller', q: 0},
+      {n: 'Doona', q: 0},
+      {n: 'Baby carrier', q: 0},
+      {n: 'Lena car seat', q: 0},
+      {n: 'Ride safer vest (to airport)', q: 0},
     ],
     'Diaper bag for plane': [
-      {n: 'Changing pad', q: 1},
-      {n: 'Size 2 diapers (5)', q: 1},
-      {n: 'Size 4 pullups (5)', q: 1},
-      {n: 'Wipes', q: 1},
-      {n: 'Change of clothes each (2)', q: 1},
-      {n: 'Formula + bottle', q: 1},
-      {n: 'Pacifier + clip', q: 1},
-      {n: 'Hand sanitizer', q: 1},
-      {n: 'Plastic bags', q: 1},
-      {n: 'Blue tablet + charger', q: 1},
-      {n: 'Pink tablet (loaded)', q: 1},
-      {n: 'Mr Pencil', q: 1},
+      {n: 'Changing pad', q: 0},
+      {n: 'Faye diapers', q: 0},
+      {n: 'Lena diapers', q: 0},
+      {n: 'Wipes', q: 0},
+      {n: 'Change of clothes each (2)', q: 0},
+      {n: 'Formula + bottle', q: 0},
+      {n: 'Pacifier + clip', q: 0},
+      {n: 'Hand sanitizer', q: 0},
+      {n: 'Plastic bags', q: 0},
+      {n: 'Blue tablet + charger', q: 0},
+      {n: 'Pink tablet (loaded)', q: 0},
+      {n: 'Mr Pencil', q: 0},
       {n: 'Headphones', q: 2},
-      {n: 'Yoto + favorite cards', q: 1},
-      {n: 'Water Wow / sticker books', q: 1},
-      {n: 'Doodle board', q: 1},
-      {n: 'Fidget toy', q: 1},
-      {n: 'Mini magnatiles', q: 1},
-      {n: 'Snacks (goldfish, pouch)', q: 1},
-      {n: 'I Spy book', q: 1},
+      {n: 'Yoto + favorite cards', q: 0},
+      {n: 'Water Wow / sticker books', q: 0},
+      {n: 'Doodle board', q: 0},
+      {n: 'Fidget toy', q: 0},
+      {n: 'Mini magnatiles', q: 0},
+      {n: 'Snacks (goldfish, pouch)', q: 0},
+      {n: 'I Spy book', q: 0},
     ],
   };
 
@@ -829,6 +814,7 @@
 
   // === QTY ===
   function calcQty(rule, days) {
+    if (rule === 0) return 0;
     if (typeof rule === 'number') return rule;
     if (rule === 'one') return 1;
     if (rule === 'days') return days;
@@ -840,21 +826,34 @@
   }
   function shouldShowWeather(tag, w) {
     if (!tag) return true;
-    if (!w) return true;
+    if (!w || !w.tempHigh) return true;
     if (tag === 'cold') return w.tempLow != null && w.tempLow < 50;
-    if (tag === 'hot') return w.tempHigh != null && w.tempHigh > 75;
+    if (tag === 'hot') return w.tempHigh != null && w.tempHigh > 70;
     if (tag === 'rain') return !!w.willRain;
-    if (tag === 'sun') return w.tempHigh != null && w.tempHigh > 60;
+    if (tag === 'sun') return w.tempHigh != null && w.tempHigh > 50;
     if (tag === 'swim') return w.tempHigh != null && w.tempHigh > 75;
     return true;
   }
 
   // === WEATHER ===
+  async function fetchWithTimeout(url, opts, ms=2000) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), ms);
+    try {
+      const r = await fetch(url, { ...opts, signal: ctrl.signal });
+      clearTimeout(t);
+      return r;
+    } catch(e) {
+      clearTimeout(t);
+      throw e;
+    }
+  }
+
   async function fetchWeather(dest, startDate, days) {
     if (!dest) return null;
     const fetchOpts = { mode: 'cors', credentials: 'omit' };
     try {
-      const geoR = await fetch(
+      const geoR = await fetchWithTimeout(
         `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dest)}&count=1`,
         fetchOpts
       );
@@ -878,7 +877,7 @@
       } else {
         url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&start_date=${fmt(startD)}&end_date=${fmt(endD)}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&temperature_unit=fahrenheit&timezone=auto`;
       }
-      const wR = await fetch(url, fetchOpts);
+      const wR = await fetchWithTimeout(url, fetchOpts);
       if (!wR.ok) return null;
       const w = await wR.json();
       if (!w.daily) return null;
@@ -925,7 +924,7 @@
           if (item.min != null) q = Math.max(q, item.min);
           if (item.max != null) q = Math.min(q, item.max);
           state.selections[t][cat].push({
-            name: item.n, qty: q, checked: q > 0, tag: item.w || null,
+            name: item.n, qty: q, checked: true, tag: item.w || null,
             orderable: item.orderable || false, orderMode: 'bring',
           });
         }
@@ -991,9 +990,11 @@
               <button type="button" class="active-bring" data-mode="bring">✈️</button>
               <button type="button" data-mode="order">🛒</button>
             </span>` : '';
+          const qtyVal = item.qty === 0 ? '' : item.qty;
+          const qtyHtml = '<input type="number" class="qty-input" value="' + qtyVal + '" min="0" placeholder="" />';
           row.innerHTML = `
             <input type="checkbox" ${item.checked ? 'checked' : ''} />
-            <input type="number" class="qty-input" value="${item.qty}" min="0" />
+            ${qtyHtml}
             <span class="item-name${item.checked ? '' : ' unchecked'}">${item.name}</span>
             ${noteHtml}
             ${orderHtml}
@@ -1028,7 +1029,11 @@
             nm.classList.toggle('unchecked', !cb.checked);
             updateCounts();
           });
-          qty.addEventListener('input', () => { item.qty = parseInt(qty.value) || 0; });
+          qty.addEventListener('input', () => {
+            const v = parseInt(qty.value);
+            item.qty = isNaN(v) ? 0 : v;
+            if (item.qty === 0) qty.value = '';
+          });
           if (item.custom) {
             row.querySelector('.item-del').addEventListener('click', e => {
               e.stopPropagation();
@@ -1098,6 +1103,27 @@
     });
   }
 
+  function buildExportFlat() {
+    const items = [];
+    for (const t of Object.keys(TRAVELERS).filter(k => state.travelers.has(k))) {
+      if (!state.selections[t]) continue;
+      const cats = state.selections[t];
+      for (const cat of Object.keys(cats)) {
+        const bringItems = cats[cat].filter(i => i.checked && i.orderMode !== 'order');
+        const orderItems = cats[cat].filter(i => i.checked && i.orderMode === 'order');
+        bringItems.forEach(item => {
+          const q = item.qty > 1 ? ' (' + item.qty + ')' : '';
+          items.push('[' + TRAVELERS[t].label + '] ' + item.name + q);
+        });
+        orderItems.forEach(item => {
+          const q = item.qty > 1 ? ' (' + item.qty + ')' : '';
+          items.push('[ORDER] ' + TRAVELERS[t].label + ': ' + item.name + q);
+        });
+      }
+    }
+    return items;
+  }
+
   function buildExport() {
     const bringLines = [];
     const orderLines = [];
@@ -1106,35 +1132,36 @@
       const cats = state.selections[t];
       let any = false;
       for (const cat of Object.keys(cats)) {
-        if (cats[cat].some(i => i.checked && i.qty > 0)) { any = true; break; }
+        if (cats[cat].some(i => i.checked)) { any = true; break; }
       }
       if (!any) continue;
       let travelerAdded = false;
       for (const cat of Object.keys(cats)) {
-        const bringItems = cats[cat].filter(i => i.checked && i.qty > 0 && i.orderMode !== 'order');
-        const orderItems = cats[cat].filter(i => i.checked && i.qty > 0 && i.orderMode === 'order');
+        const bringItems = cats[cat].filter(i => i.checked && i.orderMode !== 'order');
+        const orderItems = cats[cat].filter(i => i.checked && i.orderMode === 'order');
         if (bringItems.length) {
           if (!travelerAdded) { bringLines.push(TRAVELERS[t].label); travelerAdded = true; }
-          bringLines.push('\t' + cat);
+          bringLines.push(cat);
           for (const item of bringItems) {
-            const q = item.qty > 1 ? ` (${item.qty})` : '';
-            bringLines.push('\t\t' + item.name + q);
+            const q = item.qty > 1 ? ' (' + item.qty + ')' : '';
+            bringLines.push('    ' + item.name + q);
           }
         }
         for (const item of orderItems) {
-          const q = item.qty > 1 ? ` (${item.qty})` : '';
-          orderLines.push('\t' + TRAVELERS[t].label + ': ' + item.name + q);
+          const q = item.qty > 1 ? ' (' + item.qty + ')' : '';
+          orderLines.push('    ' + TRAVELERS[t].label + ': ' + item.name + q);
         }
       }
     }
     const allLines = [...bringLines];
     if (orderLines.length) {
       allLines.push('');
-      allLines.push('\uD83D\uDCE6 Order ahead');
+      allLines.push('\uD83D\uDED2 Order ahead');
       allLines.push(...orderLines);
     }
     return allLines.join('\n');
   }
+
 
   function toast(msg, isError) {
     const el = document.getElementById('pk-toast');
@@ -1201,21 +1228,22 @@
     const btn = document.getElementById('pk-load');
     btn.disabled = true;
     const origText = btn.textContent;
-    btn.textContent = 'Fetching weather...';
-    const wResult = await fetchWeather(state.dest, state.start, state.days);
-    if (wResult && wResult.notFound) {
-      state.weather = null;
-      toast('Destination not found, building list without weather', true);
-    } else if (!wResult && state.dest) {
-      state.weather = null;
-      toast('Weather unavailable, list built without weather');
-    } else {
-      state.weather = wResult;
-    }
-    renderWeather();
+    // Build list immediately with current weather state
     buildList();
     btn.disabled = false;
     btn.textContent = origText;
+    // Fetch weather in background and refresh if successful
+    if (state.dest) {
+      btn.textContent = 'Updating weather...';
+      fetchWeather(state.dest, state.start, state.days).then(wResult => {
+        if (wResult && !wResult.notFound && wResult.tempHigh) {
+          state.weather = wResult;
+          renderWeather();
+          buildList();
+        }
+        btn.textContent = origText;
+      }).catch(() => { btn.textContent = origText; });
+    }
   });
 
   document.getElementById('pk-check-all').addEventListener('click', () => {
@@ -1237,30 +1265,93 @@
     el.classList.toggle('on');
   });
 
-  document.getElementById('pk-copy').addEventListener('click', async () => {
-    const txt = buildExport();
-    if (!txt) { toast('Nothing checked to copy', true); return; }
-    try {
-      await navigator.clipboard.writeText(txt);
-      toast('Copied! Paste into Reminders, then swipe-right to indent sub-items.');
-    } catch (e) {
-      const ta = document.createElement('textarea');
-      ta.value = txt;
-      ta.style.position = 'fixed';
-      ta.style.top = '0';
-      ta.style.left = '0';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try { document.execCommand('copy'); toast('Copied to clipboard'); }
-      catch (e2) {
-        toast('Copy failed — see preview below', true);
-        document.getElementById('pk-preview').textContent = txt;
-        document.getElementById('pk-preview').classList.add('on');
+  const TT_CLIENT_ID = 'U6j4Y3ulNqaf5H8wfK';
+  const TT_CLIENT_SECRET = '0IhX5UwaXxE2ia4ujYbPDU7rfwJE3AC8';
+  const TT_REDIRECT = window.location.href.split('?')[0].split('#')[0];
+  const TT_AUTH_URL = 'https://ticktick.com/oauth/authorize';
+  const TT_TOKEN_URL = 'https://ticktick.com/oauth/token';
+  const TT_API = 'https://api.ticktick.com/open/v1';
+
+  async function ttGetToken(code) {
+    const body = new URLSearchParams({
+      code, grant_type: 'authorization_code', redirect_uri: TT_REDIRECT,
+    });
+    const r = await fetch(TT_TOKEN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa(TT_CLIENT_ID + ':' + TT_CLIENT_SECRET),
+      },
+      body,
+    });
+    return r.json();
+  }
+
+  async function ttCreateList(token, name) {
+    const r = await fetch(TT_API + '/project', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, color: '#059669', viewMode: 'list' }),
+    });
+    return r.json();
+  }
+
+  async function ttCreateTasks(token, projectId, items) {
+    const tasks = items.map((title, i) => ({
+      title, projectId, sortOrder: i * 10000, status: 0,
+    }));
+    const r = await fetch(TT_API + '/batch/task', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ add: tasks }),
+    });
+    return r.json();
+  }
+
+  // Handle OAuth callback
+  (async function() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const pending = localStorage.getItem('tt_pending');
+    if (code && pending) {
+      try {
+        const items = JSON.parse(pending);
+        localStorage.removeItem('tt_pending');
+        window.history.replaceState({}, '', TT_REDIRECT);
+        const btn = document.getElementById('pk-copy');
+        btn.disabled = true;
+        btn.textContent = 'Connecting to TickTick...';
+        const tokenData = await ttGetToken(code);
+        if (!tokenData.access_token) throw new Error('No token');
+        btn.textContent = 'Creating list...';
+        const dest = document.getElementById('pk-dest').value || 'Trip';
+        const listName = 'Packing — ' + dest;
+        const project = await ttCreateList(tokenData.access_token, listName);
+        if (!project.id) throw new Error('No project');
+        btn.textContent = 'Adding tasks...';
+        await ttCreateTasks(tokenData.access_token, project.id, items);
+        btn.disabled = false;
+        btn.textContent = 'Send to TickTick';
+        toast('Added ' + items.length + ' tasks to TickTick list “' + listName + '”!');
+      } catch(e) {
+        const btn = document.getElementById('pk-copy');
+        btn.disabled = false;
+        btn.textContent = 'Send to TickTick';
+        toast('TickTick error: ' + e.message, true);
       }
-      document.body.removeChild(ta);
     }
+  })();
+
+  document.getElementById('pk-copy').addEventListener('click', () => {
+    const lines = buildExportFlat();
+    if (!lines.length) { toast('Nothing checked to export', true); return; }
+    localStorage.setItem('tt_pending', JSON.stringify(lines));
+    const authUrl = TT_AUTH_URL +
+      '?client_id=' + TT_CLIENT_ID +
+      '&redirect_uri=' + encodeURIComponent(TT_REDIRECT) +
+      '&response_type=code' +
+      '&scope=tasks:write';
+    window.location.href = authUrl;
   });
 
   // INIT
