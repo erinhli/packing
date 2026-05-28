@@ -6,24 +6,24 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Packing">
-<title>Family Packing v2</title>
+<title>Family Packing</title>
 <style>
   :root {
-    --bg: #faf9f5;
+    --bg: #f0fdf9;
     --surface: #ffffff;
-    --surface-2: #f1efe8;
-    --text: #1f1f1d;
-    --text-muted: #6b6a64;
-    --text-tertiary: #9a988f;
-    --border: rgba(0,0,0,0.1);
-    --border-strong: rgba(0,0,0,0.2);
-    --accent: #c96442;
-    --accent-bg: #faece7;
-    --accent-text: #712b13;
-    --success: #0f6e56;
-    --success-bg: #e1f5ee;
+    --surface-2: #d1fae5;
+    --text: #022c22;
+    --text-muted: #065f46;
+    --text-tertiary: #6ee7b7;
+    --border: rgba(5,150,105,0.15);
+    --border-strong: rgba(5,150,105,0.3);
+    --accent: #059669;
+    --accent-bg: #d1fae5;
+    --accent-text: #064e3b;
+    --success: #0891b2;
+    --success-bg: #e0f2fe;
     --warning: #854f0b;
-    --warning-text: #ba7517;
+    --warning-text: #b45309;
     --danger: #a32d2d;
     --danger-bg: #fcebeb;
     --radius: 8px;
@@ -31,23 +31,23 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1a1916;
-      --surface: #262521;
-      --surface-2: #2c2b27;
-      --text: #f5f4ef;
-      --text-muted: #b4b2a9;
-      --text-tertiary: #888780;
-      --border: rgba(255,255,255,0.12);
-      --border-strong: rgba(255,255,255,0.24);
-      --accent: #d85a30;
-      --accent-bg: #4a1b0c;
-      --accent-text: #f5c4b3;
-      --success: #5dcaa5;
-      --success-bg: #04342c;
-      --warning: #efb35e;
-      --warning-text: #efb35e;
-      --danger: #f09595;
-      --danger-bg: #501313;
+      --bg: #022c22;
+      --surface: #064e3b;
+      --surface-2: #065f46;
+      --text: #ecfdf5;
+      --text-muted: #a7f3d0;
+      --text-tertiary: #6ee7b7;
+      --border: rgba(52,211,153,0.15);
+      --border-strong: rgba(52,211,153,0.3);
+      --accent: #34d399;
+      --accent-bg: #065f46;
+      --accent-text: #d1fae5;
+      --success: #22d3ee;
+      --success-bg: #164e63;
+      --warning: #fbbf24;
+      --warning-text: #fbbf24;
+      --danger: #f87171;
+      --danger-bg: #450a0a;
     }
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -199,16 +199,16 @@
     min-width: 50px;
     flex-shrink: 0;
   }
-  .weather-day.rainy { border-color: #7baed6; background: #edf4fb; }
+  .weather-day.rainy { border-color: #0891b2; background: #e0f2fe; }
   @media (prefers-color-scheme: dark) {
-    .weather-day.rainy { border-color: #3a6080; background: #1a2d3d; }
+    .weather-day.rainy { border-color: #0e7490; background: #0c2d3a; }
   }
   .wd-dow { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
   .wd-date { font-size: 10px; color: var(--text-tertiary); }
   .wd-icon { font-size: 18px; line-height: 1; margin: 3px 0 1px; }
   .wd-high { font-size: 13px; font-weight: 600; color: var(--text); }
   .wd-low { font-size: 11px; color: var(--text-muted); }
-  .wd-rain { font-size: 10px; color: #4a90c4; font-weight: 500; }
+  .wd-rain { font-size: 10px; color: #0891b2; font-weight: 500; }
   .order-toggle {
     display: inline-flex;
     border-radius: 999px;
@@ -233,7 +233,7 @@
     color: white;
   }
   .order-toggle button.active-order {
-    background: #4a90c4;
+    background: #0891b2;
     color: white;
   }
   .summary {
