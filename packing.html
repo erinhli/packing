@@ -77,7 +77,7 @@
     gap: 8px;
   }
   .icon-luggage::before {
-    content: "🧳";
+    content: "✈️";
     font-size: 20px;
   }
   .card {
@@ -209,6 +209,33 @@
   .wd-high { font-size: 13px; font-weight: 600; color: var(--text); }
   .wd-low { font-size: 11px; color: var(--text-muted); }
   .wd-rain { font-size: 10px; color: #4a90c4; font-weight: 500; }
+  .order-toggle {
+    display: inline-flex;
+    border-radius: 999px;
+    border: 0.5px solid var(--border-strong);
+    overflow: hidden;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+  .order-toggle button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 0;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+  }
+  .order-toggle button.active-bring {
+    background: var(--accent);
+    color: white;
+  }
+  .order-toggle button.active-order {
+    background: #4a90c4;
+    color: white;
+  }
   .summary {
     display: flex;
     gap: 16px;
@@ -483,7 +510,7 @@
       {n: 'Underwear', q: 'days+1'},
       {n: 'Bras', q: 'days/3', min: 2, max: 4},
       {n: 'Socks', q: 'days+1'},
-      {n: 'Undershirts', q: 'days/2'},
+      {n: 'Compression socks', q: 1},
       {n: 'Tops', q: 'days'},
       {n: 'Pants/jeans', q: 'days/3', min: 2, max: 4},
       {n: 'Shorts', q: 'days/3', min: 1, max: 3, w: 'hot'},
@@ -491,10 +518,11 @@
       {n: 'Dresses', q: 'days/4', min: 0, max: 2},
       {n: 'Pajamas/lounge', q: 'days/3', min: 1, max: 3},
       {n: 'Swimsuit', q: 1, w: 'swim'},
+      {n: 'Light jacket', q: 1},
       {n: 'Rain jacket', q: 1, w: 'rain'},
       {n: 'Warm coat', q: 1, w: 'cold'},
-      {n: 'Light jacket', q: 1},
       {n: 'Shoes (walking)', q: 1},
+      {n: 'Shoes (gym)', q: 1},
       {n: 'Shoes (dressy)', q: 1, min: 0},
       {n: 'Belt', q: 1, min: 0},
     ],
@@ -505,51 +533,11 @@
       {n: 'Hat (sun)', q: 1, w: 'sun'},
       {n: 'Glasses', q: 1},
       {n: 'Contacts', q: 'days'},
-
+      {n: 'Hair ties/clips', q: 1},
+      {n: 'Earrings', q: 1, min: 0},
+      {n: 'Jewelry', q: 1, min: 0},
+      {n: 'OTF band', q: 1},
       {n: 'Bags/purse', q: 1},
-    ],
-    'Toiletries & meds': [
-      {n: 'Fiber gummies', q: 1},
-      {n: 'Gummy vitamins', q: 1},
-      {n: 'Med case with PRNs', q: 1},
-      {n: 'Xiidra', q: 1},
-      {n: 'Eye drops', q: 1},
-      {n: 'Makeup', q: 1},
-      {n: 'Makeup remover', q: 1},
-      {n: 'Mouth guard + case', q: 1},
-      {n: 'Eye shade', q: 1},
-      {n: 'Efferdent', q: 1},
-      {n: 'Flossers', q: 1},
-      {n: 'Nasal gel', q: 1},
-      {n: 'Skin regimen', q: 1},
-      {n: 'Shampoo', q: 1},
-      {n: 'Conditioner', q: 1},
-      {n: 'Body wash', q: 1},
-      {n: 'Loofah', q: 1},
-      {n: 'Toothbrush + charger', q: 1},
-      {n: 'Toothpaste', q: 1},
-      {n: 'Deodorant', q: 1},
-      {n: 'Nail clippers', q: 1},
-      {n: 'Nail file', q: 1},
-      {n: 'Hair product', q: 1},
-      {n: 'Hairbrush', q: 1},
-      {n: 'Sunscreen', q: 1, w: 'sun'},
-      {n: 'Sex stuff', q: 1, min: 0},
-    ],
-    'Electronics & docs': [
-      {n: 'Passport / travel docs', q: 1},
-      {n: 'Wallet', q: 1},
-      {n: 'Keys', q: 1},
-      {n: 'Phone', q: 1},
-      {n: 'Phone charger', q: 1},
-      {n: 'Computer', q: 1},
-      {n: 'Computer charger', q: 1},
-      {n: 'iPad', q: 1},
-      {n: 'iPad charger', q: 1},
-      {n: 'Kindle / book', q: 1},
-      {n: 'Headphones', q: 1},
-      {n: 'Water bottle', q: 1},
-      {n: 'Games', q: 1, min: 0},
     ],
   };
 
@@ -557,7 +545,6 @@
     'Clothes': [
       {n: 'Underwear', q: 'days+1'},
       {n: 'Socks', q: 'days+1'},
-      {n: 'Undershirts', q: 'days/2'},
       {n: 'Tops', q: 'days'},
       {n: 'Pants/jeans', q: 'days/3', min: 2, max: 4},
       {n: 'Shorts', q: 'days/3', min: 1, max: 3, w: 'hot'},
@@ -568,6 +555,7 @@
       {n: 'Warm coat', q: 1, w: 'cold'},
       {n: 'Light jacket', q: 1},
       {n: 'Shoes (walking)', q: 1},
+      {n: 'Shoes (gym)', q: 1},
       {n: 'Shoes (dressy)', q: 1, min: 0},
       {n: 'Belt', q: 1, min: 0},
     ],
@@ -577,124 +565,182 @@
       {n: 'Hat (warm)', q: 1, w: 'cold'},
       {n: 'Hat (sun)', q: 1, w: 'sun'},
       {n: 'Glasses', q: 1},
+      {n: 'OTF band', q: 1},
       {n: 'Bags/wallet', q: 1},
     ],
   };
 
   const LENA_TEMPLATE = {
     'Lena clothes': [
-      {n: 'Outfits (top+bottom)', q: 'days+2', min: 5, max: 12},
-      {n: 'Pajamas (onesie+shorts)', q: 'days/2', min: 3, max: 5},
-      {n: 'Sleep sacks', q: 2, min: 1, max: 2},
-      {n: 'Training underwear', q: 'days+2', min: 6},
-      {n: 'Socks', q: 'days+2', min: 6, max: 10},
-      {n: 'LL Bean white fleece jacket', q: 1, w: 'cold'},
-      {n: 'Hoodie/sweater', q: 1},
-      {n: 'Rain jacket', q: 1, w: 'rain'},
-      {n: 'Warm coat', q: 1, w: 'cold'},
-      {n: 'Sneakers', q: 1},
-      {n: 'Rain boots', q: 1, w: 'rain'},
       {n: 'Beanie', q: 1, w: 'cold'},
       {n: 'Sun hat', q: 1, w: 'sun'},
-      {n: 'Gloves', q: 1, w: 'cold'},
+      {n: 'Outfits (top+bottom)', q: 'days+2', min: 5, max: 12},
+      {n: 'Training underwear', q: 'days+2', min: 6},
+      {n: 'Pajamas', q: 'days/2', min: 3, max: 5},
+      {n: 'Light jacket', q: 1},
+      {n: 'Warm jacket', q: 1, w: 'cold'},
       {n: 'Swimsuit', q: 1, w: 'swim'},
+      {n: 'Swim diaper', q: 1, w: 'swim'},
+      {n: 'Socks', q: 'days+2', min: 6, max: 10},
+      {n: 'Sneakers', q: 1},
+      {n: 'Rain boots', q: 1, w: 'rain'},
+      {n: 'Sandals', q: 1, w: 'hot'},
+      {n: 'Gloves', q: 1, w: 'cold'},
     ],
-    'Lena diapering & toiletries': [
-      {n: 'Size 4 pullups', q: 'days*5'},
-      {n: 'Wipes', q: 1},
-      {n: 'Changing pad', q: 1},
-      {n: 'Baby shampoo', q: 1},
-      {n: 'Baby lotion', q: 1},
+    'Lena toiletries': [
+      {n: 'Diapers', q: 1, orderable: true},
+      {n: 'Wipes', q: 1, orderable: true},
+      {n: 'Baby shampoo', q: 1, orderable: true},
+      {n: 'Baby lotion', q: 1, orderable: true},
+      {n: 'Baby toothpaste', q: 1, orderable: true},
       {n: 'Toothbrush', q: 1},
-      {n: 'Baby toothpaste', q: 1},
       {n: 'Washcloths', q: 3},
-      {n: 'Meds', q: 1},
+      {n: 'Nail clippers', q: 1},
+      {n: 'Sunscreen (kids)', q: 1, w: 'sun'},
+      {n: 'Liquid Tylenol', q: 1},
+      {n: 'Liquid Motrin', q: 1},
+      {n: 'Meds', q: 1, orderable: true},
+      {n: 'Miralax', q: 1, orderable: true},
+      {n: 'Senna', q: 1, orderable: true},
+      {n: 'Probiotic', q: 1, orderable: true},
     ],
-    'Lena feeding': [
-      {n: 'Sippy cup (straw)', q: 2},
-      {n: 'Water bottle', q: 1},
-      {n: 'Snacks: Bamba/Yogis/pouches', q: 1},
-      {n: 'Peanut butter bars', q: 1},
-      {n: 'String cheese', q: 1},
-      {n: 'Yogurt pouches', q: 1},
-      {n: 'Bibs', q: 3},
-      {n: 'Toddler plate', q: 1},
-      {n: 'Utensils', q: 1},
-      {n: 'Snack container', q: 1},
-      {n: 'Almond milk', q: 1},
-      {n: 'Miralax', q: 1},
-      {n: 'Senna', q: 1},
-      {n: 'Probiotic', q: 1},
-      {n: 'Booster seat (order to destination?)', q: 1, min: 0},
-    ],
-    'Lena sleep': [
-      {n: 'Titi (stuffie)', q: 1},
-      {n: 'Elmo', q: 1},
-      {n: 'Water bottles for sleep', q: 2},
-      {n: 'Nanit monitor', q: 1},
-      {n: 'White noise machine (Nanit)', q: 1},
-    ],
+
+
     'Lena fun': [
       {n: 'Tablet (charged, videos downloaded)', q: 1},
       {n: 'Tablet charger', q: 1},
-      {n: 'Stickers', q: 1},
       {n: 'Books', q: 2},
-      {n: 'Stuffies', q: 1},
+      {n: 'Stickers', q: 1},
+      {n: 'Crayons + coloring book', q: 1},
+      {n: 'Playdough', q: 1},
+      {n: 'Bubbles', q: 1},
       {n: 'Small toys', q: 1},
     ],
   };
 
   const FAYE_TEMPLATE = {
     'Faye clothes': [
-      {n: 'Outfits (onesies or shirt+pants)', q: 'days+3', min: 7, max: 14},
-      {n: 'Pajamas', q: 'days/2', min: 3, max: 5},
-      {n: 'Teddy suit', q: 1, w: 'cold'},
-      {n: 'Sleep sacks', q: 2},
       {n: 'Warm hat', q: 1, w: 'cold'},
       {n: 'Sun hat', q: 1, w: 'sun'},
-      {n: 'Socks/booties', q: 'days/2', min: 4, max: 7},
+      {n: 'Outfits (onesies or shirt+pants)', q: 'days+3', min: 7, max: 14},
+      {n: 'Pajamas', q: 'days/2', min: 3, max: 5},
+      {n: 'Sleep sacks', q: 2},
+      {n: 'Light jacket', q: 1},
+      {n: 'Warm jacket', q: 1, w: 'cold'},
+      {n: 'Swimsuit + swim diaper', q: 1, w: 'swim'},
       {n: 'Bibs', q: 8},
-      {n: 'Stroller blanket', q: 1},
-      {n: 'Swim diaper + suit', q: 1, w: 'swim'},
+      {n: 'Socks/booties', q: 'days/2', min: 4, max: 7},
     ],
-    'Faye diapering & toiletries': [
-      {n: 'Size 2 diapers', q: 'days*8'},
-      {n: 'Wipes', q: 1},
-      {n: 'Diaper cream', q: 1},
-      {n: 'Baby lotion', q: 1},
+    'Faye toiletries': [
+      {n: 'Diapers', q: 1, orderable: true},
+      {n: 'Wipes', q: 1, orderable: true},
+      {n: 'Diaper cream', q: 1, orderable: true},
+      {n: 'Baby lotion', q: 1, orderable: true},
+      {n: 'Baby shampoo', q: 1, orderable: true},
+      {n: 'Baby toothbrush / finger brush', q: 1},
+      {n: 'Washcloths', q: 3},
       {n: 'Nail clippers', q: 1},
       {n: 'Infant thermometer', q: 1},
-      {n: 'Liquid Tylenol', q: 1},
-      {n: 'Liquid Motrin', q: 1},
+      {n: 'Sunscreen (baby)', q: 1, w: 'sun'},
+      {n: 'Liquid Tylenol', q: 1, orderable: true},
+      {n: 'Liquid Motrin', q: 1, orderable: true},
       {n: 'Ziplock bags', q: 1},
-      {n: 'Washcloths', q: 3},
     ],
-    'Faye feeding': [
-      {n: 'Formula powder', q: 1},
-      {n: 'Bottles + nipples', q: 4},
-      {n: 'Bottle brush', q: 1},
-      {n: 'Baby spoon', q: 1},
-      {n: 'Baby bowl', q: 1},
-    ],
-    'Faye sleep': [
-      {n: 'Travel crib', q: 1},
-      {n: 'Travel crib sheets', q: 2},
-      {n: 'Pacifiers (BIBS)', q: 4},
-      {n: 'Sophie the giraffe', q: 1},
-      {n: 'Monkey monitor (both parts)', q: 1},
-    ],
+
+
   };
 
   const SHARED_TEMPLATE = {
+    'Toiletries & meds': [
+      {n: 'Shampoo', q: 1},
+      {n: 'Conditioner', q: 1},
+      {n: 'Body wash', q: 1},
+      {n: 'Loofah', q: 1},
+      {n: 'Toothbrush + charger (Erin)', q: 1},
+      {n: 'Toothbrush (Omar)', q: 1},
+      {n: 'Toothpaste', q: 1},
+      {n: 'Deodorant (x2)', q: 1},
+      {n: 'Lip balm', q: 1},
+      {n: 'Sunscreen', q: 1, w: 'sun'},
+      {n: 'Razor (Erin)', q: 1},
+      {n: 'Razor (Omar)', q: 1},
+      {n: 'Hair product', q: 1},
+      {n: 'Hairbrush', q: 1},
+      {n: 'Nail clippers', q: 1},
+      {n: 'Nail file', q: 1},
+      {n: 'Makeup', q: 1},
+      {n: 'Makeup remover', q: 1},
+      {n: 'Skin regimen', q: 1},
+      {n: 'Fiber gummies', q: 1},
+      {n: 'Gummy vitamins', q: 1},
+      {n: 'Med case with PRNs', q: 1},
+      {n: 'Tylenol / Advil', q: 1},
+      {n: 'Benadryl / Pepto', q: 1},
+      {n: 'Melatonin', q: 1},
+      {n: 'Xiidra', q: 1},
+      {n: 'Eye drops', q: 1},
+      {n: 'Mouth guard + case', q: 1},
+      {n: 'Eye shade', q: 1},
+      {n: 'Efferdent', q: 1},
+      {n: 'Flossers', q: 1},
+      {n: 'Nasal gel', q: 1},
+      {n: 'Sex stuff', q: 1, min: 0},
+    ],
+    'Electronics & docs': [
+      {n: 'Passports / travel docs', q: 1},
+      {n: 'Wallets', q: 1},
+      {n: 'Keys', q: 1},
+      {n: 'Phones (x2)', q: 1},
+      {n: 'Phone chargers (x2)', q: 1},
+      {n: 'Computer', q: 1},
+      {n: 'Computer charger', q: 1},
+      {n: 'iPad', q: 1},
+      {n: 'iPad charger', q: 1},
+      {n: 'Kindle / book', q: 1},
+      {n: 'Headphones (x2)', q: 1},
+      {n: 'Power bank', q: 1},
+      {n: 'Water bottles (x2)', q: 1},
+    ],
+    'Kids sleep': [
+      {n: 'Travel crib (Faye)', q: 1},
+      {n: 'Travel crib sheets', q: 2},
+      {n: 'Nanit monitor (both parts)', q: 1},
+      {n: 'Sleep stuffie (Lena)', q: 1},
+      {n: 'Water bottle for sleep (Lena)', q: 1},
+      {n: 'Comfort toy (Faye)', q: 1},
+      {n: 'Pacifiers (Faye)', q: 4},
+    ],
+    'Kids feeding': [
+      {n: 'Formula powder', q: 1, orderable: true},
+      {n: 'Bottles + nipples', q: 4},
+      {n: 'Bottle brush', q: 1, orderable: true},
+      {n: 'Sippy/straw cup (Lena)', q: 1},
+      {n: 'Sippy/straw cup (Faye)', q: 1},
+      {n: 'Water bottle (Lena)', q: 1},
+      {n: 'Baby bowl', q: 1},
+      {n: 'Toddler plate', q: 1},
+      {n: 'Baby spoon', q: 2},
+      {n: 'Utensils (Lena)', q: 1},
+      {n: 'Snack container', q: 1},
+      {n: 'Bibs (Lena)', q: 3},
+      {n: 'Clip-on high chair / travel seat', q: 1},
+      {n: 'Pouches / purees', q: 1, orderable: true},
+      {n: 'Finger food snacks', q: 1, orderable: true},
+      {n: 'Snacks: Bamba/Yogis/pouches', q: 1, orderable: true},
+      {n: 'Peanut butter bars', q: 1, orderable: true},
+      {n: 'String cheese', q: 1, orderable: true},
+      {n: 'Yogurt pouches', q: 1, orderable: true},
+      {n: 'Almond/oat milk', q: 1, orderable: true},
+    ],
     'Gear': [
       {n: 'Yoyo stroller', q: 1},
       {n: 'Doona', q: 1},
       {n: 'Baby carrier', q: 1},
       {n: 'Lena car seat', q: 1},
       {n: 'Ride safer vest (to airport)', q: 1},
-      {n: 'Order stroller to destination?', q: 1, min: 0},
     ],
     'Diaper bag for plane': [
+      {n: 'Changing pad', q: 1},
       {n: 'Size 2 diapers (5)', q: 1},
       {n: 'Size 4 pullups (5)', q: 1},
       {n: 'Wipes', q: 1},
@@ -721,7 +767,7 @@
     'Home before leaving': [
       {n: 'Take out trash', q: 1},
       {n: 'Empty fridge perishables', q: 1},
-      {n: 'Thermostat to away mode', q: 1},
+      {n: 'Turn off heat/AC', q: 1},
       {n: 'Lock all windows', q: 1},
       {n: 'Water plants', q: 1},
       {n: 'Mail hold or pickup arranged', q: 1},
@@ -880,6 +926,7 @@
           if (item.max != null) q = Math.min(q, item.max);
           state.selections[t][cat].push({
             name: item.n, qty: q, checked: q > 0, tag: item.w || null,
+            orderable: item.orderable || false, orderMode: 'bring',
           });
         }
         const custom = (state.customItems[t] && state.customItems[t][cat]) || [];
@@ -939,13 +986,40 @@
                        : item.tag === 'hot' ? '<span class="item-note">hot</span>'
                        : item.tag === 'swim' ? '<span class="item-note">swim weather</span>'
                        : '';
+          const orderHtml = item.orderable ? `
+            <span class="order-toggle">
+              <button type="button" class="active-bring" data-mode="bring">✈️</button>
+              <button type="button" data-mode="order">🛒</button>
+            </span>` : '';
           row.innerHTML = `
             <input type="checkbox" ${item.checked ? 'checked' : ''} />
             <input type="number" class="qty-input" value="${item.qty}" min="0" />
             <span class="item-name${item.checked ? '' : ' unchecked'}">${item.name}</span>
             ${noteHtml}
+            ${orderHtml}
             ${item.custom ? '<button type="button" class="item-del" aria-label="remove">×</button>' : ''}
           `;
+          if (item.orderable) {
+            const tog = row.querySelector('.order-toggle');
+            const bringBtn = tog.querySelector('[data-mode=bring]');
+            const orderBtn = tog.querySelector('[data-mode=order]');
+            if (item.orderMode === 'order') {
+              bringBtn.classList.remove('active-bring');
+              orderBtn.classList.add('active-order');
+            }
+            bringBtn.addEventListener('click', e => {
+              e.stopPropagation();
+              item.orderMode = 'bring';
+              bringBtn.classList.add('active-bring');
+              orderBtn.classList.remove('active-order');
+            });
+            orderBtn.addEventListener('click', e => {
+              e.stopPropagation();
+              item.orderMode = 'order';
+              bringBtn.classList.remove('active-bring');
+              orderBtn.classList.add('active-order');
+            });
+          }
           const cb = row.querySelector('input[type=checkbox]');
           const qty = row.querySelector('.qty-input');
           const nm = row.querySelector('.item-name');
@@ -1025,7 +1099,8 @@
   }
 
   function buildExport() {
-    const lines = [];
+    const bringLines = [];
+    const orderLines = [];
     for (const t of Object.keys(TRAVELERS).filter(k => state.travelers.has(k))) {
       if (!state.selections[t]) continue;
       const cats = state.selections[t];
@@ -1034,18 +1109,31 @@
         if (cats[cat].some(i => i.checked && i.qty > 0)) { any = true; break; }
       }
       if (!any) continue;
-      lines.push(TRAVELERS[t].label);
+      let travelerAdded = false;
       for (const cat of Object.keys(cats)) {
-        const items = cats[cat].filter(i => i.checked && i.qty > 0);
-        if (!items.length) continue;
-        lines.push('\t' + cat);
-        for (const item of items) {
+        const bringItems = cats[cat].filter(i => i.checked && i.qty > 0 && i.orderMode !== 'order');
+        const orderItems = cats[cat].filter(i => i.checked && i.qty > 0 && i.orderMode === 'order');
+        if (bringItems.length) {
+          if (!travelerAdded) { bringLines.push(TRAVELERS[t].label); travelerAdded = true; }
+          bringLines.push('\t' + cat);
+          for (const item of bringItems) {
+            const q = item.qty > 1 ? ` (${item.qty})` : '';
+            bringLines.push('\t\t' + item.name + q);
+          }
+        }
+        for (const item of orderItems) {
           const q = item.qty > 1 ? ` (${item.qty})` : '';
-          lines.push('\t\t' + item.name + q);
+          orderLines.push('\t' + TRAVELERS[t].label + ': ' + item.name + q);
         }
       }
     }
-    return lines.join('\n');
+    const allLines = [...bringLines];
+    if (orderLines.length) {
+      allLines.push('');
+      allLines.push('\uD83D\uDCE6 Order ahead');
+      allLines.push(...orderLines);
+    }
+    return allLines.join('\n');
   }
 
   function toast(msg, isError) {
